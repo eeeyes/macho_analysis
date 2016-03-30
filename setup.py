@@ -4,7 +4,7 @@ setuptools.setup(name="macho_analysis",
 			
 			version="0.01",
 			
-			description="some utils to help analysis macho files",
+			description="some utils to help analysis macho files,include util to find which module call the symbol and the dependencies between the modules",
 			
 			author="chaoran zhang",
 			

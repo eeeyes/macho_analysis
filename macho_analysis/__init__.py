@@ -1,6 +1,2 @@
-
-def helloWorld():
-
-	print "hello world from package";
 	
-import utils;
+from macho_analysis.utils import *;

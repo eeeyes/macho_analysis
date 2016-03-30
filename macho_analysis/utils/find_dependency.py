@@ -8,15 +8,23 @@ import os;
 
 import sys;
 
+#first,we should find where is the nm utils
+
+xcode_install_path = subprocess.Popen(['xcode-select','--print-path'],stdout=subprocess.PIPE).communicate()[0].strip();
+
+NM_PATH = os.path.join(xcode_install_path,'Toolchains/XcodeDefault.xctoolchain/usr/bin/nm');
+		
 class MachoProduct:
 
-	def __init__(self,lib_path):
+	def __init__(self,lib_path,arch):
 	
 		self.lib_path = lib_path;
 		
+		self.arch = arch;
+		
 	def allUndefinedSymbols(self):
 	
-		nm_cmd = ['nm','-arch','armv7','-u',self.lib_path];
+		nm_cmd = [NM_PATH,'-arch',self.arch,'-u',self.lib_path];
 
 		nm_cmd_output = subprocess.Popen(nm_cmd,stdout=subprocess.PIPE).communicate();
 
@@ -56,7 +64,7 @@ class MachoProduct:
 		
 	def allDefinedSymbols(self):	
 			
-		nm_cmd = ['nm','-arch','armv7','-U',self.lib_path];
+		nm_cmd = [NM_PATH,'-arch',self.arch,'-U',self.lib_path];
 
 		nm_cmd_output = subprocess.Popen(nm_cmd,stdout=subprocess.PIPE).communicate();
 
@@ -100,7 +108,7 @@ class MachoProduct:
 			
 		return symbols;
 
-def findDependency(lib_path_array):
+def findDependency(lib_path_array,arch):
 
 	lib_symbol_array = [];
 	
@@ -110,7 +118,7 @@ def findDependency(lib_path_array):
 	
 		lib_name = os.path.basename(lib_path);
 		
-		macho_product = MachoProduct(lib_path);
+		macho_product = MachoProduct(lib_path,arch);
 		
 		defined_symbols = macho_product.allDefinedSymbols();
 	
@@ -119,20 +127,16 @@ def findDependency(lib_path_array):
 		lib_symbol_array.append((lib_name,defined_symbols,un_defined_symbols));
 		
 	
-	#遍历所有库的未定义符号
+	lib_dep_hash = dict();
+	
+	#travel all the undefined symbols
 			
 	for (lib_name,defined_symbols,undefined_symbols) in lib_symbol_array:
 
-		depend_lib_set = set();
-	
-		depend_lib_symbol_hash = dict();
-	
-		print '======================='
-	
-		print lib_name;
-	
-		print '-----------------------'
-	
+		symbol_dep_hash = dict();
+		
+		lib_dep_hash[lib_name] = symbol_dep_hash;
+		
 		for undefined_symbol in undefined_symbols:
 	
 			for (a_lib_name,a_defined_symbols,_) in lib_symbol_array:
@@ -143,24 +147,17 @@ def findDependency(lib_path_array):
 				
 				if undefined_symbol in a_defined_symbols:
 			
-					depend_lib_set.add(a_lib_name);
-				
-					depend_lib_symbol_hash[a_lib_name] = undefined_symbol;
+					symbol_dep_hash[undefined_symbol]=a_lib_name
 				
 					break;			
-	
-		for depend_lib in depend_lib_set:
-	
-			print "%s(%s)" % (depend_lib,depend_lib_symbol_hash[depend_lib]);
-			
-		print '=======================\n\n'		
 		
+	return lib_dep_hash;
 	
 if __name__ == "__main__":
 
 	PRJ_PATH = sys.argv[1];
 
-	#find all the libs under the directory
+	#find all the libs under the project directory
 
 	lib_name_array = [];
 
@@ -180,7 +177,17 @@ if __name__ == "__main__":
 	
 	#call the findDependency function
 	
-	findDependency(lib_name_array);
+	lib_dep_hash = findDependency(lib_name_array,'armv7');
 	
-					
+	for(lib_name,symbol_dep_hash) in lib_dep_hash.items():
+	
+		print lib_name;
+		
+		print '===============';
+		
+		for (symbol_name,dep_lib) in symbol_dep_hash.items():
+		
+			print "%s : %s" % (symbol_name,dep_lib);
+			
+		print '===============';					
 	
