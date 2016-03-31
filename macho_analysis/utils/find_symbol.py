@@ -239,6 +239,8 @@ def findCallingSymbolModule(symbol,linkmap_path,disassembly_path):
 			
 				obj_path_set.add(obj_path);
 
+	linkmap_parser.cleanup();
+	
 	return obj_path_set;
 	
 	
