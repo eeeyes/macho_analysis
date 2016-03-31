@@ -6,7 +6,7 @@ def readme():
         
 setuptools.setup(name="macho_analysis",
 			
-			version="0.01",
+			version="0.011",
 			
 			description="some utils to help analysis macho files,include util to find which module call the symbol and the dependencies between the modules",
 			
