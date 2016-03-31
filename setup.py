@@ -14,13 +14,21 @@ setuptools.setup(name="macho_analysis",
 			
 			author="chaoran zhang",
 			
+			keywords='macho analysis symbol module dependencies',
+			
+			url='https://github.com/eeeyes/macho_analysis.git',
+			
 			classifiers=[
 			
         		'Development Status :: 3 - Alpha',
         	
+        		'Operating System :: MacOS :: MacOS X',
+        		
         		'License :: OSI Approved :: MIT License',
         	
-        		'Programming Language :: Python :: 2.7'
+        		'Programming Language :: Python :: 2.7',
+        		
+        		'Topic :: Utilities'
         	
       		],
       		
