@@ -27,4 +27,4 @@ The _findDependency_ function takes two arguments,the first is an array contains
 
 ##Prerequisites
 
-we need xcode to run this tool.
+We need xcode to run this tool.
