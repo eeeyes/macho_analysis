@@ -248,11 +248,7 @@ class Linkmap:
 	def cleanup(self):
 	
 		self.linkmap_file.close();	
-		
-	def helloworld(self):
-	
-		print 'hello world';
-		
+				
 if __name__ == "__main__":
 
 	linkmap = Linkmap("utils/iQiYiPhoneVideo-LinkMap-normal-armv7.txt");
